@@ -71,3 +71,18 @@ def test_create_task_missing_title():
         "description": "Wrong task with no title",
     })
     assert response.status_code == 422
+
+#Test get with empty list
+def test_get_tasks_empty_at_start():
+        response = client.get("/tasks/")
+        assert response.status_code == 200
+        assert response.json() == []
+
+def test_get_users_returns_all():
+        client.post("/users/", json={
+            "id": 2,
+            "title": "learn relational Databases",
+            "description": "start learning different types of DBs",
+    })
+        response = client.get("/users/")
+        assert len(response.json()) == 1
