@@ -57,3 +57,11 @@ def test_create_task_by_default():
     assert response.json()[1]["status"] == "todo"
     assert response.json()[1]["priority"] == "low"
     assert response.json()[1]["tags"] is None
+
+#Test with missing required field
+def test_create_task_missing_title():
+    response = client.post("/tasks/", json= {
+        "id": 3,
+        "description": "Wrong task with no title",
+    })
+    assert response.status_code == 422
