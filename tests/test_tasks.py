@@ -1,3 +1,5 @@
+from http.client import responses
+
 from fastapi.testclient import TestClient
 from main import app
 from datetime import datetime
@@ -31,7 +33,6 @@ def test_get_root():
     # tags : Optional[list[str]] = None
     # created_at :Optional[datetime]= None
 
-#Test when all variables given
 def test_create_task():
     response = client.post("/tasks/", json= {
         "id": 1,
@@ -49,8 +50,6 @@ def test_create_task():
     assert response.json()[0]["priority"] == "medium"
     assert response.json()[0]["tags"] == ["python", "backend"]
 
-
-#Test when default are not given
 def test_create_task_by_default():
     response = client.post("/tasks/", json= {
         "id": 2,
@@ -64,7 +63,6 @@ def test_create_task_by_default():
     assert response.json()[0]["priority"] == "low"
     assert response.json()[0]["tags"] is None
 
-#Test with missing required field
 def test_create_task_missing_title():
     response = client.post("/tasks/", json= {
         "id": 3,
@@ -72,17 +70,26 @@ def test_create_task_missing_title():
     })
     assert response.status_code == 422
 
-#Test get with empty list
 def test_get_tasks_empty_at_start():
         response = client.get("/tasks/")
         assert response.status_code == 200
         assert response.json() == []
 
-def test_get_users_returns_all():
-        client.post("/users/", json={
+def test_get_tasks_returns_all():
+        client.post("/tasks/", json={
             "id": 2,
             "title": "learn relational Databases",
             "description": "start learning different types of DBs",
     })
-        response = client.get("/users/")
+        response = client.get("/tasks/")
         assert len(response.json()) == 1
+
+def test_get_task_by_id():
+    client.post("/tasks/", json = Task)
+    response = client.get("/tasks/1")
+    assert response.status_code == 200
+    assert response.json()["title"]  == "learn fast api"
+
+def test_get_task_by_id_not_found():
+    response = client.get("/tasks/10000")
+    assert response.status_code == 404
