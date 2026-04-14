@@ -1,5 +1,6 @@
 from fastapi.testclient import TestClient
 from main import app
+from datetime import datetime
 
 
 client = TestClient(app)
@@ -16,11 +17,28 @@ def test_get_root():
     assert response.json() == {'message': 'Welcome to Our Task Manager API'}
 
 
+    # id: int
+    # title: str
+    # description: str
+    # status : Optional[Status] = Status.todo
+    # priority : Optional[Priority] = Priority.low
+    # tags : Optional[list[str]] = None
+    # created_at :Optional[datetime]= None
 
+#Test when all variables given
 def test_create_task():
-    response = client.post("/tasks/", json= Task)
+    response = client.post("/tasks/", json= {
+        "id": 1,
+        "title": "learn fast api",
+        "description": "start learning fast api to work on the assignment",
+        "status" : "in_progress",
+        "priority" : "medium",
+        "tags" : ["python", "backend"],
+        #"created_at" : datetime.now(),
+    })
     assert response.status_code == 201
-    #assert response.json()["title"] == "learn fast api"
-    #assert response.json()["status"] == "todo"
-    #assert response.json()["priority"] == "low"
-    #assert response.json()["tags"] is None
+    assert response.json()[0]["title"] == "learn fast api"
+    assert response.json()[0]["description"] == "start learning fast api to work on the assignment"
+    assert response.json()[0]["status"] == "in_progress"
+    assert response.json()[0]["priority"] == "medium"
+    assert response.json()[0]["tags"] == ["python", "backend"]
