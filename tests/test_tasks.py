@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 from main import app
 from datetime import datetime
-
+import pytest
 
 client = TestClient(app)
 
@@ -10,6 +10,12 @@ Task = {
     "title": "learn fast api",
     "description": "start learning fast api to work on the assignment",
 }
+
+@pytest.fixture(autouse=True)
+def before_each():
+     response = client.post(
+        "/reset/")
+     assert response.status_code == 200
 
 def test_get_root():
     response = client.get("/")
@@ -52,11 +58,11 @@ def test_create_task_by_default():
         "description": "start learning different types of DBs",
     })
     assert response.status_code == 201
-    assert response.json()[1]["title"] == "learn relational Databases"
-    assert response.json()[1]["description"] == "start learning different types of DBs"
-    assert response.json()[1]["status"] == "todo"
-    assert response.json()[1]["priority"] == "low"
-    assert response.json()[1]["tags"] is None
+    assert response.json()[0]["title"] == "learn relational Databases"
+    assert response.json()[0]["description"] == "start learning different types of DBs"
+    assert response.json()[0]["status"] == "todo"
+    assert response.json()[0]["priority"] == "low"
+    assert response.json()[0]["tags"] is None
 
 #Test with missing required field
 def test_create_task_missing_title():
