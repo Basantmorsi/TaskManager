@@ -42,3 +42,18 @@ def test_create_task():
     assert response.json()[0]["status"] == "in_progress"
     assert response.json()[0]["priority"] == "medium"
     assert response.json()[0]["tags"] == ["python", "backend"]
+
+
+#Test when default are not given
+def test_create_task_by_default():
+    response = client.post("/tasks/", json= {
+        "id": 2,
+        "title": "learn relational Databases",
+        "description": "start learning different types of DBs",
+    })
+    assert response.status_code == 201
+    assert response.json()[1]["title"] == "learn relational Databases"
+    assert response.json()[1]["description"] == "start learning different types of DBs"
+    assert response.json()[1]["status"] == "todo"
+    assert response.json()[1]["priority"] == "low"
+    assert response.json()[1]["tags"] is None
