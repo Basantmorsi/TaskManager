@@ -35,6 +35,10 @@ async def create_task(task:Task):
     task_list.append(task)
     return task_list
 
+@router.get("/tasks/", status_code=status.HTTP_200_OK)
+async def get_users():
+    return task_list
+
 @router.post("/reset/", status_code=status.HTTP_200_OK)
 async def reset_tasks():
     task_list.clear()
