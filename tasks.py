@@ -36,8 +36,21 @@ async def create_task(task:Task):
     return task_list
 
 @router.get("/tasks/", status_code=status.HTTP_200_OK)
-async def get_users():
+async def get_tasks():
     return task_list
+
+@router.get("/tasks/{id}", status_code=status.HTTP_200_OK)
+async  def get_task(id:int):
+    task_by_id = None
+    for task in task_list:
+        if task.id == id:
+            task_by_id = task
+    if task_by_id is None:
+        raise HTTPException(status_code= 404, detail="Task not found")
+    return  task_by_id
+
+
+
 
 @router.post("/reset/", status_code=status.HTTP_200_OK)
 async def reset_tasks():
