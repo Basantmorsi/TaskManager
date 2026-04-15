@@ -57,6 +57,15 @@ async def update_task(id:int, task:Task):
     task_list[id -1] = task
     return task_list
 
+@router.delete("/tasks/{id}", status_code=status.HTTP_200_OK)
+async def delete_task(id:int):
+    for t in task_list:
+        if t.id == id:
+            task_list.remove(t)
+            return {}
+
+    raise HTTPException(status_code=404, detail="Task not found")
+
 @router.post("/reset/", status_code=status.HTTP_200_OK)
 async def reset_tasks():
     task_list.clear()

@@ -115,3 +115,19 @@ def test_update_non_existing_task():
         "description" : "Updated new description",
     })
     assert response.status_code == 404
+
+def test_delete_existing_task():
+    client.post("/tasks/", json = Task)
+    task_id = Task["id"]
+    response = client.delete(f"/tasks/{task_id}")
+    assert response.status_code == 200
+
+    get_resp = client.get(f"/tasks/{task_id}")
+    assert get_resp.status_code == 404
+
+def test_delete_non_existing_task():
+    client.post("/tasks/", json = Task)
+    task_id = Task["id"]
+    response = client.delete(f"/tasks/5000")
+    assert response.status_code == 404
+
