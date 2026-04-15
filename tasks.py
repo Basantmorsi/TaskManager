@@ -50,7 +50,10 @@ async  def get_task(id:int):
     return  task_by_id
 
 
-
+@router.put("/tasks/{id}", status_code = status.HTTP_200_OK)
+async def update_task(id:int, task:Task):
+    task_list[id -1] = task
+    return task_list
 
 @router.post("/reset/", status_code=status.HTTP_200_OK)
 async def reset_tasks():
