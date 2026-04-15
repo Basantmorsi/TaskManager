@@ -36,23 +36,26 @@ async def create_task(task:Task):
     return task_list
 
 @router.get("/tasks/", status_code=status.HTTP_200_OK)
-async def get_tasks(keyword: str | None = None, status : str | None = None, priority : str | None = None):
+async def get_tasks(keyword: str | None = None, status : str | None = None, priority : str | None = None, tag : str | None = None):
+    results = []
     if keyword :
-        results = []
         for task in task_list:
             if keyword.lower() in task.title.lower() or keyword.lower() in task.description.lower():
                 results.append(task)
         return results
     if status :
-        results = []
         for task in task_list:
             if status.lower() in task.status.lower():
                 results.append(task)
         return results
     if priority :
-        results = []
         for task in task_list:
             if priority.lower() in task.priority.lower():
+                results.append(task)
+        return results
+    if tag:
+        for task in task_list:
+            if any(tag.lower() in t.lower() for t in task.tags or [] ) :
                 results.append(task)
         return results
     return task_list
