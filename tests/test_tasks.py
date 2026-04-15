@@ -93,3 +93,25 @@ def test_get_task_by_id():
 def test_get_task_by_id_not_found():
     response = client.get("/tasks/10000")
     assert response.status_code == 404
+
+def test_update_existing_task():
+    client.post("/tasks/", json = Task)
+    task_id = Task["id"]
+    response = client.put(f"/tasks/{task_id}", json = {
+        "id" : task_id,
+        "title" : "Updated new title",
+        "description" : "Updated new description",
+    })
+    assert response.status_code == 200
+    assert response.json()[0]["title"] == "Updated new title"
+    assert response.json()[0]["description"] == "Updated new description"
+
+def test_update_non_existing_task():
+    client.post("/tasks/", json = Task)
+    task_id = Task["id"]
+    response = client.put(f"/tasks/{task_id}", json = {
+        "id" : 5000,
+        "title" : "Updated new title",
+        "description" : "Updated new description",
+    })
+    assert response.status_code == 404

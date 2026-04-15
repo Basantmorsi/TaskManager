@@ -52,6 +52,8 @@ async  def get_task(id:int):
 
 @router.put("/tasks/{id}", status_code = status.HTTP_200_OK)
 async def update_task(id:int, task:Task):
+    if task.id != id | id not in task_list:
+        raise HTTPException(status_code=404, detail="Task not found")
     task_list[id -1] = task
     return task_list
 
